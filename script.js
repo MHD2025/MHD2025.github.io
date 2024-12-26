@@ -1,7 +1,7 @@
 let games = [
     { id: 1, name: "Asterigos", size: "8.6", price: 3000, image: "https://i.imgur.com/hNjm5oi.jpeg" },
     { id: 2, name: "Assassin's Creed Origins", size: "49.7", price: 3000, image: "https://i.imgur.com/8iPOFys.jpeg" },
-    { id: 2, name: "Assassins Creed Odyssey", size: "71.6", price: 3000, image: "https://i.imgur.com/VxSsJPa.jpeg" },
+    { id: 2, name: "Assassin's Creed Odyssey", size: "71.6", price: 3000, image: "https://i.imgur.com/VxSsJPa.jpeg" },
     { id: 3, name: "Assassin's Creed Valhalla", size: "48.2", price: 3000, image: "https://i.imgur.com/vDH15Bn.jpeg" },
     { id: 4, name: "Assassin's Creed Mirage", size: "35.2", price: 3000, image: "https://i.imgur.com/lVijwEu.jpeg" },
     { id: 2, name: "Alien Isolation", size: "28.3", price: 3000, image: "https://i.imgur.com/FxM24uJ.jpeg" },
