@@ -128,7 +128,6 @@ function addToCart(gameId) {
     if (game && !cart.find(g => g.id === gameId)) {
         cart.push(game);
         updateCartUI();
-        // تظليل اللعبة التي تم إضافتها
         const gameCard = document.querySelector(`#game-${gameId}`);
         gameCard.classList.add('added');
         const addButton = gameCard.querySelector('.add-to-cart');
@@ -214,5 +213,4 @@ window.onscroll = function() {
     }
 };
 
-// تفعيل عرض الألعاب عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', renderGames);

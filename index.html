@@ -5,14 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> موقع كتالوج الألعاب | برمجة و تطوير : مهدي حسين </title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .music-control {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+
+        #music-toggle {
+            background-color: #ffd700;
+            color: #1a1a1a;
+            border: none;
+            height: 70px;
+            width: 70px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #music-toggle:hover {
+            background-color: #ffc400;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            #music-toggle {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- الصفحة الرئيسية -->
+
+    <h1>_______________________</h1>
+    <br>
     <h1> PS4 موقع كتالوج العاب </h1>
-    <h1>برمجة و تطوير : مهدي حسين</h1>
+    <h1>_______________________</h1>
     <div id="games-container" class="games-container">
-        <!-- الألعاب سيتم عرضها هنا -->
+
     </div>
+
+    <div class="music-control">
+        <button id="music-toggle">تشغيل الموسيقى</button>
+    </div>
+    <audio id="background-music" loop>
+        <source src="Music.mp3" type="audio/mpeg">
+        المتصفح الخاص بك لا يدعم تشغيل الموسيقى.
+    </audio>
+
     <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const music = document.getElementById('background-music');
+            const musicToggle = document.getElementById('music-toggle');
+
+            let isPlaying = false;
+
+            musicToggle.addEventListener('click', () => {
+                if (isPlaying) {
+                    music.pause();
+                    musicToggle.textContent = 'تشغيل الموسيقى';
+                } else {
+                    music.play();
+                    musicToggle.textContent = 'إيقاف الموسيقى';
+                }
+                isPlaying = !isPlaying;
+            });
+        });
+    </script>
 </body>
 </html>
