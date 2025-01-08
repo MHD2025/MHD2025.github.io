@@ -3,54 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> موقع كتالوج العاب PS4 | برمجة و تطوير : مهدي حسين </title>
+    <title>موقع كتالوج العاب PS4 | برمجة و تطوير : مهدي حسين</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal&display=swap" rel="stylesheet">
+    <!-- إضافة مكتبة Font Awesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        @keyframes text-color-animation {
+            0% { color: gold; text-shadow: 0 0 10px rgba(255, 217, 0, 0.562); }
+            25% { color: #ff2600; text-shadow: 0 0 10px rgb(255, 38, 0); }
+            50% { color: #1e90ff; text-shadow: 0 0 10px rgba(30, 144, 255, 0.8); }
+            75% { color: #32cd32; text-shadow: 0 0 10px rgba(50, 205, 50, 0.8); }
+            100% { color: gold; text-shadow: 0 0 10px rgba(255, 217, 0, 0.562); }
+        }
+
+        .animated-header {
+            animation: text-color-animation 7s infinite;
+        }
+
+        .header-text {
+            font-family: 'Tajawal', sans-serif;
+            font-size: 27px;
+            text-align: center;
+        }
+
         .music-control {
             position: fixed;
             top: 10px;
             right: 10px;
             z-index: 1000;
+            display: flex;
+            gap: 10px;
         }
 
-        #music-toggle {
+        #music-toggle, #about-button {
             background-color: #ffd700;
             color: #1a1a1a;
             border: none;
-            height: 70px;
-            width: 70px;
-            font-size: 16px;
+            height: 40px;
+            width: 53px;
+            font-size: 24px;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s;
         }
 
-        #music-toggle:hover {
+        #music-toggle:hover, #about-button:hover {
             background-color: #ffc400;
             transform: scale(1.05);
         }
 
-        @media (max-width: 600px) {
-            #music-toggle {
-                font-size: 14px;
-                padding: 8px 16px;
-            }
+        #about-modal {
+            align-items: center;
+            justify-content: center;
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 400px;
+            background-color: #1a1a1a;
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+
+        #about-modal h2 {
+            margin-top: 0;
+        }
+
+        #about-modal button {
+            color: black;
+            background-color: #ffd700;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #about-modal button:hover {
+            background-color: #ffc400;
+        }
+
+        #modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1500;
         }
     </style>
 </head>
 <body>
-
-    <h1>_______________________</h1>
+<br>
+<br>
+    <h1 class="animated-header header-text">_____________________________</h1>
     <br>
-    <h1> PS4 موقع كتالوج العاب </h1>
-    <h1>_______________________</h1>
+    <h1 class="animated-header header-text">PS4 موقع كتالوج العاب</h1>
+    <h1 class="animated-header header-text">_____________________________</h1>
     <div id="games-container" class="games-container">
 
     </div>
 
     <div class="music-control">
-        <button id="music-toggle">تشغيل الموسيقى</button>
-    </div>
+        <button id="music-toggle"><i class="fas fa-volume-mute"></i></button> <!-- بداية بالصوت المقطوع -->
+        <button id="about-button">حول</button>
+        <div id="modal-overlay"></div>
+        <div id="about-modal">
+            <h2>عن الموقع</h2>
+            <p> هذا الموقع مخصص لأستعراض العاب جهاز بلايستيشن 4 بطريقة جذابة و منظمة. حيث يمكنك تصفح الالعاب. مشاهدة الصور. قراءة حجم اللعبة و سعرها </p>
+            <br>
+            <p> برمجة و تطوير : مهدي حسين </p>
+            <button id="close-modal">إغلاق</button>
+        </div>
     <audio id="background-music" loop>
         <source src="Music.mp3" type="audio/mpeg">
         المتصفح الخاص بك لا يدعم تشغيل الموسيقى.
@@ -61,18 +135,39 @@
         document.addEventListener('DOMContentLoaded', () => {
             const music = document.getElementById('background-music');
             const musicToggle = document.getElementById('music-toggle');
+            const musicIcon = musicToggle.querySelector('i');
+            const aboutButton = document.getElementById('about-button');
+            const aboutModal = document.getElementById('about-modal');
+            const modalOverlay = document.getElementById('modal-overlay');
+            const closeModal = document.getElementById('close-modal');
 
             let isPlaying = false;
 
             musicToggle.addEventListener('click', () => {
                 if (isPlaying) {
                     music.pause();
-                    musicToggle.textContent = 'تشغيل الموسيقى';
+                    musicIcon.classList.remove('fa-volume-up');
+                    musicIcon.classList.add('fa-volume-mute');
                 } else {
                     music.play();
-                    musicToggle.textContent = 'إيقاف الموسيقى';
+                    musicIcon.classList.remove('fa-volume-mute');
+                    musicIcon.classList.add('fa-volume-up');
                 }
                 isPlaying = !isPlaying;
+            });
+            aboutButton.addEventListener('click', () => {
+                aboutModal.style.display = 'block';
+                modalOverlay.style.display = 'block';
+            });
+
+            closeModal.addEventListener('click', () => {
+                aboutModal.style.display = 'none';
+                modalOverlay.style.display = 'none';
+            });
+
+            modalOverlay.addEventListener('click', () => {
+                aboutModal.style.display = 'none';
+                modalOverlay.style.display = 'none';
             });
         });
     </script>
