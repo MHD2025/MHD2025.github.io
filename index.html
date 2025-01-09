@@ -26,6 +26,90 @@
             text-align: center;
         }
 
+        .loader {
+            border: 4px solid #f3f3f3; /* خلفية خفيفة */
+            border-top: 4px solid gold; /* اللون الرئيسي */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .image-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: auto; /* ضبط ارتفاع الصورة */
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .image-container img {
+            display: none; /* إخفاء الصورة حتى اكتمال التحميل */
+            width: 100%;
+            height: auto;
+            object-fit: cover; /* ضمان أن تكون الصورة داخل الإطار */
+        }
+
+        .image-container.loaded img {
+            display: block; /* عرض الصورة بعد اكتمال التحميل */
+        }
+
+        .image-container.loaded .loader {
+            display: none; /* إخفاء المؤشر بعد اكتمال التحميل */
+        }
+
+        .play-video {
+            position: absolute;
+            bottom: 5px;
+            left: 6px;
+            background-color: gold;
+            color: rgb(0, 0, 0);
+            border: none;
+            width: 100px;
+            height: 23px;
+            border-radius: 5px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .play-video:hover {
+            background-color: #e74c3c;
+            transform: scale(1.05);
+        }
+
+        .game-card {
+            position: relative; /* للسماح بعرض الزر داخل البطاقة */
+        }
+
+        .search-container {
+            position: fixed;
+            top: 10px;
+            left: 5px;
+            z-index: 1000;
+        }
+
+        #search-input {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ffd700;
+            border-radius: 5px;
+            background-color: #1a1a1a;
+            color: rgb(255, 255, 255);
+            width: 200px;
+        }
+
+        #search-input::placeholder {
+            color: #ffd700;
+        }
 
         .music-control {
             position: fixed;
@@ -49,7 +133,7 @@
         }
 
         #music-toggle:hover, #about-button:hover {
-            background-color: #ffc400;
+            background-color: #e74c3c;
             transform: scale(1.05);
         }
 
@@ -85,10 +169,11 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 10px;
+            font-size: 20px;
         }
 
         #about-modal button:hover {
-            background-color: #ffc400;
+            background-color: #e74c3c;
         }
 
         #modal-overlay {
@@ -110,6 +195,11 @@
     <br>
     <h1 class="animated-header header-text">PS4 موقع كتالوج العاب</h1>
     <h1 class="animated-header header-text">___________________________</h1>
+
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="...البحث" />
+    </div>
+
     <div id="games-container" class="games-container">
 
     </div>
@@ -120,7 +210,7 @@
         <div id="modal-overlay"></div>
         <div id="about-modal">
             <h2>عن الموقع</h2>
-            <p> هذا الموقع هو كتالوج مخصص لأستعراض العاب جهاز بلايستيشن 4 بطريقة أنيقة و منظمة. حيث يمكنك تصفح الالعاب. مشاهدة الصور. قراءة حجم اللعبة و سعرها </p>
+            <p> هذا الموقع هو كتالوج مخصص لأستعراض العاب جهاز بلايستيشن 4 بطريقة أنيقة و منظمة. حيث يمكنك تصفح الالعاب. مشاهدة الصور. مشاهدة فيديوهات عن اللعبة. خاصية البحث. قراءة حجم اللعبة و سعرها </p>
             <p>________________________________________________</p>
             <br>
             <p> برمجة و تطوير : مهدي حسين </p>
@@ -135,44 +225,113 @@
 
     <script src="script.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const music = document.getElementById('background-music');
-            const musicToggle = document.getElementById('music-toggle');
-            const musicIcon = musicToggle.querySelector('i');
-            const aboutButton = document.getElementById('about-button');
-            const aboutModal = document.getElementById('about-modal');
-            const modalOverlay = document.getElementById('modal-overlay');
-            const closeModal = document.getElementById('close-modal');
+    document.addEventListener('DOMContentLoaded', () => {
+        const music = document.getElementById('background-music');
+        const musicToggle = document.getElementById('music-toggle');
+        const musicIcon = musicToggle.querySelector('i');
+        const aboutButton = document.getElementById('about-button');
+        const aboutModal = document.getElementById('about-modal');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const closeModal = document.getElementById('close-modal');
+        const searchInput = document.getElementById('search-input');
 
-            let isPlaying = false;
+        let isPlaying = false;
 
-            musicToggle.addEventListener('click', () => {
-                if (isPlaying) {
-                    music.pause();
-                    musicIcon.classList.remove('fa-volume-up');
-                    musicIcon.classList.add('fa-volume-mute');
-                } else {
-                    music.play();
-                    musicIcon.classList.remove('fa-volume-mute');
-                    musicIcon.classList.add('fa-volume-up');
-                }
-                isPlaying = !isPlaying;
-            });
-            aboutButton.addEventListener('click', () => {
-                aboutModal.style.display = 'block';
-                modalOverlay.style.display = 'block';
-            });
-
-            closeModal.addEventListener('click', () => {
-                aboutModal.style.display = 'none';
-                modalOverlay.style.display = 'none';
-            });
-
-            modalOverlay.addEventListener('click', () => {
-                aboutModal.style.display = 'none';
-                modalOverlay.style.display = 'none';
-            });
+        musicToggle.addEventListener('click', () => {
+            if (isPlaying) {
+                music.pause();
+                musicIcon.classList.remove('fa-volume-up');
+                musicIcon.classList.add('fa-volume-mute');
+            } else {
+                music.play();
+                musicIcon.classList.remove('fa-volume-mute');
+                musicIcon.classList.add('fa-volume-up');
+            }
+            isPlaying = !isPlaying;
         });
-    </script>
+
+        aboutButton.addEventListener('click', () => {
+            aboutModal.style.display = 'block';
+            modalOverlay.style.display = 'block';
+        });
+
+        closeModal.addEventListener('click', () => {
+            aboutModal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+        });
+
+        modalOverlay.addEventListener('click', () => {
+            aboutModal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+        });
+
+        searchInput.addEventListener('input', filterGames);
+
+        function filterGames() {
+            const searchQuery = searchInput.value.toLowerCase();
+            const filteredGames = games.filter(game => game.name.toLowerCase().startsWith(searchQuery));
+            renderGames(filteredGames);
+        }
+
+        function renderGames(gamesList) {
+            const container = document.getElementById('games-container');
+            container.innerHTML = gamesList.map(game => `
+                <div class="game-card">
+                    <div class="image-container">
+                        <div class="loader"></div>
+                        <img src="${game.image}" alt="${game.name}" onload="this.parentElement.classList.add('loaded')">
+                    </div>
+                    <div class="game-info">
+                        <h3>${game.name}</h3>
+                        <div class="game-details">
+                            <span>${game.size} GB</span><br>
+                            <span class="game-price"> ${game.price} د.ع</span>
+                        </div>
+                    </div>
+                    <button class="play-video" onclick="playVideo('${game.name}')">مشاهدة اللعبة</button>
+                </div>
+            `).join('');
+        }
+
+        function playVideo(gameName) {
+            const searchQuery = encodeURIComponent(`${gameName} gameplay`);
+            const youtubeUrl = `https://www.youtube.com/results?search_query=${searchQuery}`;
+            window.open(youtubeUrl, '_blank');
+        }
+
+        renderGames(games);
+    });
+</script>
+
+<script>
+    function renderGames() {
+        const container = document.getElementById('games-container');
+        container.innerHTML = games.map(game => `
+            <div class="game-card">
+                <div class="image-container">
+                    <div class="loader"></div>
+                    <img src="${game.image}" alt="${game.name}" onload="this.parentElement.classList.add('loaded')">
+                </div>
+                <div class="game-info">
+                    <h3>${game.name}</h3>
+                    <div class="game-details">
+                        <span>${game.size} GB</span><br>
+                        <span class="game-price"> ${game.price} د.ع</span>
+                    </div>
+                </div>
+                <button class="play-video" onclick="playVideo('${game.name}')">مشاهدة اللعبة</button>
+            </div>
+        `).join('');
+    }
+
+    function playVideo(gameName) {
+        const searchQuery = encodeURIComponent(`${gameName} gameplay`);
+        const youtubeUrl = `https://www.youtube.com/results?search_query=${searchQuery}`;
+        window.open(youtubeUrl, '_blank');
+    }
+
+    document.addEventListener('DOMContentLoaded', renderGames);
+</script>
+
 </body>
 </html>
